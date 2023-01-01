@@ -28,10 +28,12 @@ class Agent:
 
     def change_state(new_state):
         """ Move to a new spot."""
-        # take action
-
+        # get tranform for new state
+        current = np.array(self.current_state.coords)
+        action = np.array(new_state["transform"])
+        new = list(np.add(action, current))
         # move to new state
-        self.current_state = new_state
+        self.current_state = State(new[0], new[1])
         return action
 
 
@@ -75,11 +77,11 @@ class Agent:
         current = np.array(self.current_state.coords)
 
         # what are the coords of the adjacent position?
-        new = np.array(self.transforms[direction])
-        move = list(np.add(new, current))
+        action = np.array(self.transforms[direction])
+        new = list(np.add(action, current))
 
         # what is the function value of the adjacent position?
-        move_value = template['template'][move[0]][move[1]][self.strategy]
+        move_value = template['template'][new[0]][new[1]][self.strategy]
         return move_value
 
 

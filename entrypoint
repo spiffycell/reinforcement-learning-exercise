@@ -37,11 +37,11 @@ def train(args):
     while agent.current_state.coord != ending_point.coord:
         logging.info("Considering possible actions")
         # evaluate adjacent values and compare with strategy
-        agent.check_adjacents(template)
+        optimal_entry = agent.check_adjacents(template)
 
         # take action
         logging.info("Taking an action")
-        action = agent.change_state(new_state)
+        action = agent.change_state(optimal_entry)
         agent.check_health()
 
         logging.info("Logging the action")
