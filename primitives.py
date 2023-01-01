@@ -15,7 +15,7 @@ class Agent:
         return
 
 
-    def choose_strategy(strategy): 
+    def choose_strategy(self, strategy): 
         """ Pick a strategy."""
         if strategy == 'min_cost':
             self.strategy = 'cost'
@@ -26,12 +26,13 @@ class Agent:
         return
 
 
-    def change_state(new_state):
+    def change_state(self, new_state):
         """ Move to a new spot."""
         # get tranform for new state
-        current = np.array(self.current_state.coords)
+        current = np.array(self.current_state.coord)
         action = np.array(new_state["transform"])
         new = list(np.add(action, current))
+        logging.info("Moved to space:%s\n", new)
         # move to new state
         self.current_state = State(new[0], new[1])
         return action
@@ -58,30 +59,32 @@ class Agent:
 
         # get the optimal value
         if self.strategy == 'cost':
-            optimal_value = min([adj_space[self.strategy] for adj_space \
+            optimal_value = min([adj_space["value"] for adj_space \
                 in adjacents])
         elif self.strategy == 'reward':
-            optimal_value = max([adj_space[self.strategy] for adj_space \
+            optimal_value = max([adj_space["value"] for adj_space \
                 in adjacents])
 
         # get the entry that owns the optimal value
         optimal_entry = next((adj_space for adj_space in adjacents \
-                if adj_space[self.strategy] == optimal_value), None)
+                if adj_space["value"] == optimal_value), None)
 
+        logging.info("Optimal entry is:%s\n", optimal_entry)
         return optimal_entry
 
 
     def look(self, direction, template):
         """ Get the cost/reward of and adjacent state."""
         # what are the coords my current position?
-        current = np.array(self.current_state.coords)
+        current = np.array(self.current_state.coord)
+        logging.info("Current position:%s\n", current)
 
         # what are the coords of the adjacent position?
         action = np.array(self.transforms[direction])
         new = list(np.add(action, current))
 
         # what is the function value of the adjacent position?
-        move_value = template['template'][new[0]][new[1]][self.strategy]
+        move_value = template.temp_file['template'][new[0]][new[1]][self.strategy]
         return move_value
 
 
