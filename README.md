@@ -1,5 +1,7 @@
 # Reinforcement Learning Exercise
 
+## STILL A WORK IN PROGRESS
+
 This is a simple RL exercise for me that I'm building from scratch.
 
 In this app, we can choose to train the model or to test it.
