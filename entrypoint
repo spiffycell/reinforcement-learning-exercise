@@ -1,0 +1,87 @@
+#!/usr/bin/python3
+""" Execute agent run."""
+
+# standard libraries
+import argparse
+import logging
+import sys
+
+# non-standard libraries
+from primitives import Agent, Path, State, Template
+
+
+def train(arg):
+    """ Begin execution."""
+    # initialize logging
+    logging.basicConfig(level=logging.INFO)
+
+    # load template
+    logging.info("Loading template...")
+    template = Template()
+    template.load(arg)
+    logging.info("Template loaded!")
+
+    # declare a starting point
+    starting_point = State(0, 0)  
+    ending_point = State(5, 5)
+
+    # spawn the agent at the starting point
+    agent = Agent(current_state=starting_point)
+
+    # initialize the path (action sequence)
+    path = Path()
+
+    # traverse through the state space following the template
+    # in accordance with the assigned strategy
+    # logging actions along the way
+    # and saving the action sequence as the named task
+    while agent.current_state.coord != ending_point.coord:
+        logging.info("Considering possible actions")
+        # how does it know what actions are possible
+        # - for a given state
+        # - is there a per-state action space?
+        #   - if so, does that need to be mapped?
+        # how does it weigh the possible actions?
+        # how does it come to a decision?
+        # how does it act on that decision?
+
+        logging.info("Taking an action")
+        action = agent.change_state(new_state)
+        agent.check_health()
+
+        logging.info("Logging the action")
+        path.log_moves(action)
+
+    logging.info("Reached the endpoint!")
+
+    # save your training output
+    logging.info("Saving action sequence as task")
+    task = args.train.replace('templates/', '').replace('.json', '')
+    path.save(task)
+    return
+
+
+def test(arg):
+    return
+
+
+def main(args):
+    # if training
+    if args.train:
+        train(args.train)
+    # if testing
+    elif args.test:
+        test(args.test)
+    else:
+        logging.critical("Please specify a mode: --train or --test.")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    """ Spawn main."""
+    # collect arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train')
+    parser.add_argument('--test')
+    args = parser.parse_args()
+    main(args)
