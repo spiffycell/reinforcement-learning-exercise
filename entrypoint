@@ -34,13 +34,12 @@ def train(arg):
     # and saving the action sequence as the named task
     while agent.current_state.coord != ending_point.coord:
         logging.info("Considering possible actions")
-        # how does it know what actions are possible
-        # - for a given state
-        # - is there a per-state action space?
-        #   - if so, does that need to be mapped?
-        # how does it weigh the possible actions?
-        # how does it come to a decision?
-        # how does it act on that decision?
+        # we'd have to tell it to look left, look right, look up, look down
+        look_up()
+        # and while its looking, compare the values
+        # correlate the state space grid with the template
+        # handle any 'out of bounds' errors
+
 
         logging.info("Taking an action")
         action = agent.change_state(new_state)

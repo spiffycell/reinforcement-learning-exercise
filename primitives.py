@@ -23,24 +23,71 @@ class Agent:
         return action
 
     def check_health(self):
+        """ Check the health of the agent."""
         if self.health >= 0:
             logging.info("The agent has died.")
             sys.exit(1)
         
+    def check_adjacents(self):
+        """ Check adjacent spaces."""
+        # what is the cost of moving up
+        up = self.look_up()
+        down = self.look_down()
+        left = self.look_left()
+        right = self.look_right()
+        return
+
+
+    def look_up(self):
+        """ Get the cost/reward of the tile one up."""
+        # what are the coords my current position?
+        # what are the coords of the position one up?
+        # what is the cost function of the position one up on the template?
+        return
+
+
+    def look_down(self):
+        """ Get the cost/reward of the tile one down."""
+        # what are the coords my current position?
+        # what are the coords of the position one down?
+        # what is the cost function of the position one down on the template?
+        return
+
+
+    def look_left(self):
+        """ Get the cost/reward of the tile one left."""
+        # what are the coords my current position?
+        # what are the coords of the position one left?
+        # what is the cost function of the position one left on the template?
+        return
+
+
+    def look_right(self):
+        """ Get the cost/reward of the tile one right."""
+        # what are the coords my current position?
+        # what are the coords of the position one right?
+        # what is the cost function of the position one right on the template?
+        return
+
 
 class ActionSpace:
     """ ActionSpace object."""
     def __init__(self):
         """ Initialize ActionSpace object."""
         # the realm of actions which are available to the agent
+        # to instantiate our actionspace, we can create an action
+        # that inherits its identity from being in the space of actions
+        # is the action space an array of actions?
+        self.actions = ["up", "down", "left", "right"]
         return
 
 
 class Action(ActionSpace):
     """ Action object."""
-    def __init__(self):
+    def __init__(self, name):
         """ Initialize Action object."""
         # the action which the agent is taking
+        self.name = name
         return
 
 
