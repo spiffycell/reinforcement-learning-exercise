@@ -11,10 +11,7 @@ from primitives import Agent, Path, State, Template
 
 
 def train(arg):
-    """ Begin execution."""
-    # initialize logging
-    logging.basicConfig(level=logging.INFO)
-
+    """ Begin training."""
     # load template
     logging.info("Loading template...")
     template = Template()
@@ -62,10 +59,15 @@ def train(arg):
 
 
 def test(arg):
+    """ Begin testing."""
     return
 
 
 def main(args):
+    """ Main function."""
+    # initialize logging
+    logging.basicConfig(level=logging.INFO)
+
     # if training
     if args.train:
         train(args.train)
@@ -78,7 +80,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    """ Spawn main."""
+    """ Spawn argument parser and main."""
     # collect arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--train')
