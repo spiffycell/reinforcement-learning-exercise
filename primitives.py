@@ -1,5 +1,7 @@
 import logging
+import numpy as np
 import sys
+
 
 class Agent:
     """ Agent object."""
@@ -7,12 +9,22 @@ class Agent:
         """ Initialize Agent object."""
         self.current_state = current_state
         self.strategy = None
+        self.transforms = {"up": [1, 0], "down": [-1, 0], \
+                "left": [0, -1], "right": [0, 1]} 
         self.health = 100
         return
 
+
     def choose_strategy(strategy): 
         """ Pick a strategy."""
+        if strategy == 'min_cost':
+            self.strategy = 'cost'
+        elif strategy == 'max_reward':
+            self.strategy = 'reward'
+        else:
+            self.strategy = None
         return
+
 
     def change_state(new_state):
         """ Move to a new spot."""
@@ -22,52 +34,65 @@ class Agent:
         self.current_state = new_state
         return action
 
+
     def check_health(self):
         """ Check the health of the agent."""
         if self.health >= 0:
             logging.info("The agent has died.")
             sys.exit(1)
         
-    def check_adjacents(self):
+
+    def check_adjacents(self, template):
         """ Check adjacent spaces."""
-        # what is the cost of moving up
-        up = self.look_up()
-        down = self.look_down()
-        left = self.look_left()
-        right = self.look_right()
-        return
+        # what is the cost of moving to a given adjacent space
+        adjacents = [{"name": "up", "transform": self.transforms["up"], \
+                "value": self.look("up", template)}, \
+                {"name": "down", "transform": self.transforms["down"], \
+                "value": self.look("down", template)}, \
+                {"name": "left", "transform": self.transforms["left"], \
+                "value": self.look("left", template)}, \
+                {"name": "right", "transform": self.transforms["right"], \
+                "value": self.look("right", template)}]
+
+        # get the optimal value
+        if self.strategy == 'cost':
+            optimal_value = min([adj_space[self.strategy] for adj_space \
+                in adjacents])
+        elif self.strategy == 'reward':
+            optimal_value = max([adj_space[self.strategy] for adj_space \
+                in adjacents])
+
+        # get the entry that owns the optimal value
+        optimal_entry = next((adj_space for adj_space in adjacents \
+                if adj_space[self.strategy] == optimal_value), None)
+
+        return optimal_entry
 
 
-    def look_up(self):
-        """ Get the cost/reward of the tile one up."""
+    def look(self, direction, template):
+        """ Get the cost/reward of and adjacent state."""
         # what are the coords my current position?
-        # what are the coords of the position one up?
-        # what is the cost function of the position one up on the template?
-        return
+        current = np.array(self.current_state.coords)
 
+        # what are the coords of the adjacent position?
+        new = np.array(self.transforms[direction])
+        move = list(np.add(new, current))
 
-    def look_down(self):
-        """ Get the cost/reward of the tile one down."""
-        # what are the coords my current position?
-        # what are the coords of the position one down?
-        # what is the cost function of the position one down on the template?
-        return
+        # what is the function value of the adjacent position?
+        move_value = template['template'][move[0]][move[1]][self.strategy]
 
+        # get the values
+        
+        # get the optimal value
+        if self.strategy == 'cost':
+        # get the min 
+        elif self.strategy == 'reward':
+        # get the max
 
-    def look_left(self):
-        """ Get the cost/reward of the tile one left."""
-        # what are the coords my current position?
-        # what are the coords of the position one left?
-        # what is the cost function of the position one left on the template?
-        return
+        # get the corresponding name of the operation
+        # get the corresponding transform to be undertaken
 
-
-    def look_right(self):
-        """ Get the cost/reward of the tile one right."""
-        # what are the coords my current position?
-        # what are the coords of the position one right?
-        # what is the cost function of the position one right on the template?
-        return
+        return move_value
 
 
 class ActionSpace:
