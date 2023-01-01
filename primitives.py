@@ -15,7 +15,6 @@ class Agent:
         self.health = 100
         return
 
-
     def choose_strategy(self, strategy): 
         """ Pick a strategy."""
         if strategy == 'min_cost':
@@ -25,7 +24,6 @@ class Agent:
         else:
             self.strategy = None
         return
-
 
     def change_state(self, new_state):
         """ Move to a new spot."""
@@ -41,14 +39,12 @@ class Agent:
         self.current_state.reward = new_state["reward"]
         return action
 
-
     def check_health(self):
         """ Check the health of the agent."""
         if self.health <= 0:
             logging.debug("The agent has died.")
             sys.exit(1)
         
-
     def check_adjacents(self, template):
         """ Check adjacent spaces."""
         # what is the cost/reward of moving to a given adjacent space
@@ -83,7 +79,6 @@ class Agent:
         logging.debug("Optimal entry is:%s\n", optimal_entry)
         return optimal_entry
 
-
     def look(self, direction, template, value=None):
         """ Get the cost/reward of an adjacent state."""
         # what are the coords my current position?
@@ -113,7 +108,6 @@ class Agent:
         logging.debug("Corresponding template entry: %s", template.temp_file['template'][new[0]][new[1]])
         return move
 
-
     def poison_pill(self, value):
         """ Make a possible state change unappealing."""
         if value == 'cost':
@@ -126,7 +120,6 @@ class Agent:
                 return 100
             elif self.strategy == 'reward':
                 return 0
-
 
     def take_cost_reward(self):
         """ Update the health of the agent."""
@@ -171,6 +164,25 @@ class State(StateSpace):
         return
 
 
+class Task:
+    """ Task object."""
+    def __init__(self):
+        """ Initialize task object."""
+        self.task_file = ''
+        return
+
+    def load(self, filename):
+        """ Load a task from file."""
+        import json
+        file_data = open(filename, 'r').read()
+        self.task_file = json.loads(file_data)
+        return
+
+    def parse(self):
+        """ Parse task file data."""
+        return
+
+
 class Template:
     """ Template object."""
     def __init__(self):
@@ -178,17 +190,11 @@ class Template:
         self.temp_file = ''
         return
 
-
     def load(self, filename):
         """ Load a template from file."""
         import json
         file_data = open(filename, 'r').read()
         self.temp_file = json.loads(file_data)
-        return
-
-
-    def parse(self):
-        """ Parse loaded template object."""
         return
 
 
@@ -200,12 +206,10 @@ class Path():
         self.moves = []
         return
 
-
     def log_moves(self, action): 
         """ Log move.""" 
         self.moves.append(action)
         return
-
 
     def save(self, task):
         """ Save action set in file named after task."""

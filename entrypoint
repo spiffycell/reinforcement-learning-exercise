@@ -7,7 +7,7 @@ import logging
 import sys
 
 # non-standard libraries
-from primitives import Agent, Path, State, Template
+from primitives import Agent, Path, State, Task, Template
 
 
 def train(args):
@@ -60,6 +60,12 @@ def train(args):
 
 def test(args):
     """ Begin testing."""
+    # load task file
+    task = Task()
+    task.load(args.test)
+
+    # parse the data, ready it for execution
+    task.parse()
     return
 
 
