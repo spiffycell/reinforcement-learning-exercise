@@ -32,78 +32,103 @@ class Agent:
         current = np.array(self.current_state.coord)
         action = np.array(new_state["transform"])
         new = list(np.add(action, current))
-        logging.info("Moved to space:%s\n", new)
+        logging.debug("Moved to space:%s\n", new)
         # move to new state
         self.current_state = State(new[0], new[1])
+        self.current_state.cost = new_state["cost"]
+        self.current_state.reward = new_state["reward"]
         return action
 
 
     def check_health(self):
         """ Check the health of the agent."""
         if self.health <= 0:
-            logging.info("The agent has died.")
+            logging.debug("The agent has died.")
             sys.exit(1)
         
 
     def check_adjacents(self, template):
         """ Check adjacent spaces."""
-        # what is the cost of moving to a given adjacent space
+        # what is the cost/reward of moving to a given adjacent space
         adjacents = [{"name": "up", "transform": self.transforms["up"], \
-                "value": self.look("up", template)}, \
+                "cost": self.look("up", template, value="cost"), \
+                "reward": self.look("up", template, value="reward")}, \
                 {"name": "down", "transform": self.transforms["down"], \
-                "value": self.look("down", template)}, \
+                "cost": self.look("down", template, value="cost"), \
+                "reward": self.look("down", template, value="reward")}, \
                 {"name": "left", "transform": self.transforms["left"], \
-                "value": self.look("left", template)}, \
+                "cost": self.look("left", template, value="cost"), \
+                "reward": self.look("left", template, value="reward")}, \
                 {"name": "right", "transform": self.transforms["right"], \
-                "value": self.look("right", template)}]
+                "cost": self.look("right", template, value="cost"), \
+                "reward": self.look("right", template, value="reward")}]
+
+        # show adjacents
+        logging.debug("List of adjacents: %s\n", adjacents)
 
         # get the optimal value
         if self.strategy == 'cost':
-            optimal_value = min([adj_space["value"] for adj_space \
+            optimal_value = min([adj_space[self.strategy] for adj_space \
                 in adjacents])
         elif self.strategy == 'reward':
-            optimal_value = max([adj_space["value"] for adj_space \
+            optimal_value = max([adj_space[self.strategy] for adj_space \
                 in adjacents])
 
         # get the entry that owns the optimal value
         optimal_entry = next((adj_space for adj_space in adjacents \
-                if adj_space["value"] == optimal_value), None)
+                if adj_space[self.strategy] == optimal_value), None)
 
-        logging.info("Optimal entry is:%s\n", optimal_entry)
+        logging.debug("Optimal entry is:%s\n", optimal_entry)
         return optimal_entry
 
 
-    def look(self, direction, template):
+    def look(self, direction, template, value=None):
         """ Get the cost/reward of an adjacent state."""
         # what are the coords my current position?
         current = np.array(self.current_state.coord)
-        logging.info("Current position:%s", current)
+        logging.debug("Current position:%s", current)
 
         # what are the coords of the adjacent position?
         action = np.array(self.transforms[direction])
 
         # get new position
         new = list(np.add(action, current))
-        logging.info("Proposed new position:%s", new)
+        logging.debug("Proposed new position:%s", new)
 
         # handle out of bounds
         for num in new:
             if num < 0:
-                if self.strategy == 'cost':
-                    return 100
-                elif self.strategy == 'reward':
-                    return 0
+                if value == 'cost':
+                    if self.strategy == 'cost':
+                        return 100
+                    elif self.strategy == 'reward':
+                        return 0
+                elif value == 'reward':
+                    if self.strategy == 'cost':
+                        return 100
+                    elif self.strategy == 'reward':
+                        return 0
 
         # what is the function value of the adjacent position?
-        move_value = template.temp_file['template'][new[0]][new[1]][self.strategy]
-        logging.info("Corresponding template entry: %s", template.temp_file['template'][new[0]][new[1]])
-        return move_value
+        move = template.temp_file['template'][new[0]][new[1]][self.strategy]
+        logging.debug("Corresponding template entry: %s", template.temp_file['template'][new[0]][new[1]])
+        return move
 
 
     def take_cost_reward(self):
         """ Update the health of the agent."""
+        # we need to get both cost and reward
         self.health -= self.current_state.cost
         self.health += self.current_state.reward
+
+
+class Action:
+    """ Action object."""
+    def __init__(self, current_state=None):
+        """ Initialize Actions object."""
+        self.actions = {"up": [1, 0], "down": [-1, 0], \
+                "left": [0, -1], "right": [0, 1]} 
+        return
 
 
 class StateSpace:
@@ -122,8 +147,8 @@ class State(StateSpace):
     def __init__(self, x_coord, y_coord):
         """ Initialize State object."""
         # the state which the agent is currently on
-        self.reward = ''
-        self.cost = ''
+        self.reward = None 
+        self.cost = None 
         self.action_set = []
 
         # declare coordinates
@@ -140,12 +165,14 @@ class Template:
         self.temp_file = ''
         return
 
+
     def load(self, filename):
         """ Load a template from file."""
         import json
         file_data = open(filename, 'r').read()
         self.temp_file = json.loads(file_data)
         return
+
 
     def parse(self):
         """ Parse loaded template object."""
@@ -160,10 +187,12 @@ class Path():
         self.moves = []
         return
 
+
     def log_moves(self, action): 
         """ Log move.""" 
         self.moves.append(action)
         return
+
 
     def save(self, task):
         """ Save action set in file named after task."""
