@@ -8,6 +8,7 @@ class Agent:
     def __init__(self, current_state=None):
         """ Initialize Agent object."""
         self.current_state = current_state
+        self.previous_state = current_state
         self.strategy = None
         self.transforms = {"up": [1, 0], "down": [-1, 0], \
                 "left": [0, -1], "right": [0, 1]} 
@@ -34,6 +35,7 @@ class Agent:
         new = list(np.add(action, current))
         logging.debug("Moved to space:%s\n", new)
         # move to new state
+        self.previous_state = self.current_state
         self.current_state = State(new[0], new[1])
         self.current_state.cost = new_state["cost"]
         self.current_state.reward = new_state["reward"]
@@ -95,24 +97,35 @@ class Agent:
         new = list(np.add(action, current))
         logging.debug("Proposed new position:%s", new)
 
-        # handle out of bounds
+        # RULE: no out of bounds
         for num in new:
-            if num < 0:
-                if value == 'cost':
-                    if self.strategy == 'cost':
-                        return 100
-                    elif self.strategy == 'reward':
-                        return 0
-                elif value == 'reward':
-                    if self.strategy == 'cost':
-                        return 100
-                    elif self.strategy == 'reward':
-                        return 0
+            if num < 0 or num > 5:
+                pp_val = self.poison_pill(value)
+                return pp_val
+
+        # RULE: no revisiting prior states
+        if new == self.previous_state.coord:
+            pp_val = self.poison_pill(value)
+            return pp_val
 
         # what is the function value of the adjacent position?
         move = template.temp_file['template'][new[0]][new[1]][self.strategy]
         logging.debug("Corresponding template entry: %s", template.temp_file['template'][new[0]][new[1]])
         return move
+
+
+    def poison_pill(self, value):
+        """ Make a possible state change unappealing."""
+        if value == 'cost':
+            if self.strategy == 'cost':
+                return 100
+            elif self.strategy == 'reward':
+                return 0
+        elif value == 'reward':
+            if self.strategy == 'cost':
+                return 100
+            elif self.strategy == 'reward':
+                return 0
 
 
     def take_cost_reward(self):
@@ -152,7 +165,7 @@ class State(StateSpace):
         self.action_set = []
 
         # declare coordinates
-        self.coord = (x_coord, y_coord)
+        self.coord = [x_coord, y_coord]
         self.x_coord = x_coord
         self.y_coord = y_coord 
         return
