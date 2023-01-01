@@ -1,4 +1,3 @@
-""" Train an agent to avoid cost."""
 import logging
 import sys
 
