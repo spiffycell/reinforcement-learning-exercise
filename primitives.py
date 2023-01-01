@@ -100,6 +100,12 @@ class Agent:
         return move_value
 
 
+    def take_cost_reward(self, cost, reward):
+        """ Update the health of the agent."""
+        self.health -= cost
+        self.health += reward
+
+
 class ActionSpace:
     """ ActionSpace object."""
     def __init__(self):
@@ -145,22 +151,6 @@ class State(StateSpace):
         self.coord = (x_coord, y_coord)
         self.x_coord = x_coord
         self.y_coord = y_coord 
-        return
-
-
-class StrategySpace:
-    """ StrategySpace object."""
-    def __init__(self):
-        """ Initialize StrategySpace object."""
-        # the realm of all possible strategies
-        return
-
-
-class Strategy(StrategySpace):
-    """ Strategy object."""
-    def __init__(self):
-        """ Initialize Strategy object."""
-        # the strategy the agent is currently employing
         return
 
 
