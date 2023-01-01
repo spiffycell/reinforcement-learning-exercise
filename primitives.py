@@ -40,7 +40,7 @@ class Agent:
 
     def check_health(self):
         """ Check the health of the agent."""
-        if self.health >= 0:
+        if self.health <= 0:
             logging.info("The agent has died.")
             sys.exit(1)
         
@@ -74,17 +74,29 @@ class Agent:
 
 
     def look(self, direction, template):
-        """ Get the cost/reward of and adjacent state."""
+        """ Get the cost/reward of an adjacent state."""
         # what are the coords my current position?
         current = np.array(self.current_state.coord)
-        logging.info("Current position:%s\n", current)
+        logging.info("Current position:%s", current)
 
         # what are the coords of the adjacent position?
         action = np.array(self.transforms[direction])
+
+        # get new position
         new = list(np.add(action, current))
+        logging.info("Proposed new position:%s", new)
+
+        # handle out of bounds
+        for num in new:
+            if num < 0:
+                if self.strategy == 'cost':
+                    return 100
+                elif self.strategy == 'reward':
+                    return 0
 
         # what is the function value of the adjacent position?
         move_value = template.temp_file['template'][new[0]][new[1]][self.strategy]
+        logging.info("Corresponding template entry: %s", template.temp_file['template'][new[0]][new[1]])
         return move_value
 
 
