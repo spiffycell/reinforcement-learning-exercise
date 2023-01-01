@@ -99,7 +99,7 @@ class Agent:
 
         # RULE: no out of bounds
         for num in new:
-            if num < 0 or num > 5:
+            if num < 0 or num > 4:
                 pp_val = self.poison_pill(value)
                 return pp_val
 
@@ -210,5 +210,5 @@ class Path():
     def save(self, task):
         """ Save action set in file named after task."""
         with open(f"tasks/{task}.task", "w") as f:
-            f.write(self.moves)
+            f.write(str(self.moves))
         return

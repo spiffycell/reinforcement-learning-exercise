@@ -20,7 +20,7 @@ def train(args):
 
     # declare a starting point
     starting_point = State(0, 0)  
-    ending_point = State(5, 5)
+    ending_point = State(4, 4)
 
     # spawn the agent at the starting point
     agent = Agent(current_state=starting_point)
