@@ -100,31 +100,10 @@ class Agent:
         return move_value
 
 
-    def take_cost_reward(self, cost, reward):
+    def take_cost_reward(self):
         """ Update the health of the agent."""
-        self.health -= cost
-        self.health += reward
-
-
-class ActionSpace:
-    """ ActionSpace object."""
-    def __init__(self):
-        """ Initialize ActionSpace object."""
-        # the realm of actions which are available to the agent
-        # to instantiate our actionspace, we can create an action
-        # that inherits its identity from being in the space of actions
-        # is the action space an array of actions?
-        self.actions = ["up", "down", "left", "right"]
-        return
-
-
-class Action(ActionSpace):
-    """ Action object."""
-    def __init__(self, name):
-        """ Initialize Action object."""
-        # the action which the agent is taking
-        self.name = name
-        return
+        self.health -= self.current_state.cost
+        self.health += self.current_state.reward
 
 
 class StateSpace:
