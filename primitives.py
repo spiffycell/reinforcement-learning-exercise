@@ -80,18 +80,6 @@ class Agent:
 
         # what is the function value of the adjacent position?
         move_value = template['template'][move[0]][move[1]][self.strategy]
-
-        # get the values
-        
-        # get the optimal value
-        if self.strategy == 'cost':
-        # get the min 
-        elif self.strategy == 'reward':
-        # get the max
-
-        # get the corresponding name of the operation
-        # get the corresponding transform to be undertaken
-
         return move_value
 
 
