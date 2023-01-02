@@ -75,6 +75,8 @@ def test(args):
     for task in task.task_data['task']:
         agent.change_state(task, 'test')
 
+    # display the steps traversed
+    logging.info("Traversal path: %s", agent.traversal)
     return
 
 

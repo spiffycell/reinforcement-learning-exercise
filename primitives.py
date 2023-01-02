@@ -14,6 +14,7 @@ class Agent:
         self.strategy = None
         self.transforms = {"up": [1, 0], "down": [-1, 0], \
                 "left": [0, -1], "right": [0, 1]} 
+        self.traversal = []
         self.health = 100
         return
 
@@ -29,18 +30,25 @@ class Agent:
 
     def change_state(self, new_state, mode=None):
         """ Move to a new spot."""
-        # get tranform for new state
+        # get current state
         current = np.array(self.current_state.coord)
+        # get transform
         action = np.array(new_state["transform"])
+
+        # calculate the new state
         new = list(np.add(action, current))
         logging.info("Moved to space:%s", new)
+
         # move to new state
         self.previous_state = self.current_state
         self.current_state = State(new[0], new[1])
 
+        # set the cost and reward values for agent health update
         if mode == "train": 
             self.current_state.cost = new_state["cost"]
             self.current_state.reward = new_state["reward"]
+        elif mode == "test":
+            self.traversal.append(current_state.coord)
         return action
 
     def check_health(self):
