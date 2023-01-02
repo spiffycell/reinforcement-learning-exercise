@@ -64,11 +64,16 @@ def test(args):
     task = Task()
     task.load(args.test)
 
-    # parse the data, ready it for execution
-    task.parse()
-
     # set starting point
     starting_point = State(0, 0)  
+    logging.info("Starting at: %s", starting_point.coord)
+
+    # spawn agent
+    agent = Agent(current_state=starting_point)
+
+    # run through actions
+    for task in task.task_data['task']:
+        agent.change_state(task)
 
     return
 

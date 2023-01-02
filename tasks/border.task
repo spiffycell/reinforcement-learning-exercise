@@ -1,1 +1,1 @@
-{'task': [{'move': [0, 1]}, {'move': [0, 1]}, {'move': [0, 1]}, {'move': [0, 1]}, {'move': [1, 0]}, {'move': [1, 0]}, {'move': [1, 0]}, {'move': [1, 0]}]}
+{'task': [{'transform': [0, 1]}, {'transform': [0, 1]}, {'transform': [0, 1]}, {'transform': [0, 1]}, {'transform': [1, 0]}, {'transform': [1, 0]}, {'transform': [1, 0]}, {'transform': [1, 0]}]}

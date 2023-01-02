@@ -27,18 +27,20 @@ class Agent:
             self.strategy = None
         return
 
-    def change_state(self, new_state):
+    def change_state(self, new_state, mode=None):
         """ Move to a new spot."""
         # get tranform for new state
         current = np.array(self.current_state.coord)
         action = np.array(new_state["transform"])
         new = list(np.add(action, current))
-        logging.debug("Moved to space:%s\n", new)
+        logging.info("Moved to space:%s", new)
         # move to new state
         self.previous_state = self.current_state
         self.current_state = State(new[0], new[1])
-        self.current_state.cost = new_state["cost"]
-        self.current_state.reward = new_state["reward"]
+
+        if mode == "train": 
+            self.current_state.cost = new_state["cost"]
+            self.current_state.reward = new_state["reward"]
         return action
 
     def check_health(self):
@@ -209,7 +211,7 @@ class Path():
     def log_moves(self, action): 
         """ Log move.""" 
         # do we want to reformat before storing?
-        action_obj = {"move": list(action)}
+        action_obj = {"transform": list(action)}
         self.moves.append(action_obj)
         logging.info("Storing action: %s", action_obj)
         return
