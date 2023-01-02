@@ -98,7 +98,9 @@ class Agent:
 
         # RULE: no out of bounds
         for num in new:
-            if num < 0 or num > 4:
+            # future consideration: what if the grid is not square?
+            # how to handle out-of-bounds conditions (both rows and cols)?
+            if num < 0 or num > (template.rows - 1):
                 pp_val = self.poison_pill(value)
                 return pp_val
 
@@ -191,12 +193,16 @@ class Template:
     def __init__(self):
         """ Initialize template object."""
         self.temp_file = ''
+        self.temp_rows = ''
+        self.temp_cols = ''
         return
 
     def load(self, filename):
         """ Load a template from file."""
         task_data = open(filename, 'r').read()
         self.temp_file = json.loads(task_data)
+        self.rows = len(self.temp_file["template"]) 
+        self.cols = len(self.temp_file["template"][0]) 
         return
 
 
