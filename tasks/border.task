@@ -1,1 +1,1 @@
-[array([0, 1]), array([0, 1]), array([0, 1]), array([0, 1]), array([1, 0]), array([1, 0]), array([1, 0]), array([1, 0])]
+{'task': [{'move': [0, 1]}, {'move': [0, 1]}, {'move': [0, 1]}, {'move': [0, 1]}, {'move': [1, 0]}, {'move': [1, 0]}, {'move': [1, 0]}, {'move': [1, 0]}]}

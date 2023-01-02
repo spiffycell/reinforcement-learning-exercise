@@ -66,6 +66,10 @@ def test(args):
 
     # parse the data, ready it for execution
     task.parse()
+
+    # set starting point
+    starting_point = State(0, 0)  
+
     return
 
 

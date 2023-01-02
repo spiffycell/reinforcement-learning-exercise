@@ -1,3 +1,5 @@
+import ast
+import json
 import logging
 import numpy as np
 import sys
@@ -168,14 +170,13 @@ class Task:
     """ Task object."""
     def __init__(self):
         """ Initialize task object."""
-        self.task_file = ''
+        self.task_data = ''
         return
 
     def load(self, filename):
         """ Load a task from file."""
-        import json
         file_data = open(filename, 'r').read()
-        self.task_file = json.loads(file_data)
+        self.task_data = ast.literal_eval(file_data)
         return
 
     def parse(self):
@@ -192,9 +193,8 @@ class Template:
 
     def load(self, filename):
         """ Load a template from file."""
-        import json
-        file_data = open(filename, 'r').read()
-        self.temp_file = json.loads(file_data)
+        task_data = open(filename, 'r').read()
+        self.temp_file = json.loads(task_data)
         return
 
 
@@ -208,11 +208,19 @@ class Path():
 
     def log_moves(self, action): 
         """ Log move.""" 
-        self.moves.append(action)
+        # do we want to reformat before storing?
+        action_obj = {"move": list(action)}
+        self.moves.append(action_obj)
+        logging.info("Storing action: %s", action_obj)
         return
 
     def save(self, task):
         """ Save action set in file named after task."""
+        # create the full dictionary object
+        move_sequence = {}
+        move_sequence["task"] = self.moves
+
+        # and export it
         with open(f"tasks/{task}.task", "w") as f:
-            f.write(str(self.moves))
+            f.write(str(move_sequence))
         return
