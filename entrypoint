@@ -42,7 +42,7 @@ def train(args):
 
         # take action
         logging.info("Taking an action")
-        action = agent.change_state(optimal_entry)
+        action = agent.change_state(optimal_entry, 'train')
         agent.take_cost_reward()
         agent.check_health()
 
@@ -73,7 +73,7 @@ def test(args):
 
     # run through actions
     for task in task.task_data['task']:
-        agent.change_state(task)
+        agent.change_state(task, 'test')
 
     return
 
