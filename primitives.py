@@ -11,21 +11,21 @@ class Agent:
         """ Initialize Agent object."""
         self.current_state = current_state
         self.previous_state = current_state
-        self.strategy = None
+        self.policy = None
         self.transforms = {"up": [1, 0], "down": [-1, 0], \
                 "left": [0, -1], "right": [0, 1]} 
         self.traversal = []
         self.health = 100
         return
 
-    def choose_strategy(self, strategy): 
+    def choose_policy(self, policy): 
         """ Pick a strategy."""
-        if strategy == 'min_cost':
-            self.strategy = 'cost'
-        elif strategy == 'max_reward':
-            self.strategy = 'reward'
+        if policy == 'min_cost':
+            self.policy = 'cost'
+        elif policy == 'max_reward':
+            self.policy = 'reward'
         else:
-            self.strategy = None
+            self.policy = None
         return
 
     def change_state(self, new_state, mode=None):
@@ -77,21 +77,21 @@ class Agent:
         logging.debug("List of adjacents: %s\n", adjacents)
 
         # get the optimal value
-        if self.strategy == 'cost':
-            optimal_value = min([adj_space[self.strategy] for adj_space \
+        if self.policy == 'cost':
+            optimal_value = min([adj_space[self.policy] for adj_space \
                 in adjacents])
-        elif self.strategy == 'reward':
-            optimal_value = max([adj_space[self.strategy] for adj_space \
+        elif self.policy == 'reward':
+            optimal_value = max([adj_space[self.policy] for adj_space \
                 in adjacents])
 
         # get the entry that owns the optimal value
         optimal_entry = next((adj_space for adj_space in adjacents \
-                if adj_space[self.strategy] == optimal_value), None)
+                if adj_space[self.policy] == optimal_value), None)
 
         logging.debug("Optimal entry is:%s\n", optimal_entry)
         return optimal_entry
 
-    def look(self, direction, template, value=None):
+    def look(self, direction, strategy, value=None):
         """ Get the cost/reward of an adjacent state."""
         # what are the coords my current position?
         current = np.array(self.current_state.coord)
@@ -108,7 +108,7 @@ class Agent:
         for num in new:
             # future consideration: what if the grid is not square?
             # how to handle out-of-bounds conditions (both rows and cols)?
-            if num < 0 or num > (template.rows - 1):
+            if num < 0 or num > (strategy.rows - 1):
                 pp_val = self.poison_pill(value)
                 return pp_val
 
@@ -118,21 +118,21 @@ class Agent:
             return pp_val
 
         # what is the function value of the adjacent position?
-        move = template.temp_file['template'][new[0]][new[1]][self.strategy]
-        logging.debug("Corresponding template entry: %s", template.temp_file['template'][new[0]][new[1]])
+        move = strategy.temp_file['strategy'][new[0]][new[1]][self.policy]
+        logging.debug("Corresponding strategy entry: %s", strategy.temp_file['strategy'][new[0]][new[1]])
         return move
 
     def poison_pill(self, value):
         """ Make a possible state change unappealing."""
         if value == 'cost':
-            if self.strategy == 'cost':
+            if self.policy == 'cost':
                 return 100
-            elif self.strategy == 'reward':
+            elif self.policy == 'reward':
                 return 0
         elif value == 'reward':
-            if self.strategy == 'cost':
+            if self.policy == 'cost':
                 return 100
-            elif self.strategy == 'reward':
+            elif self.policy == 'reward':
                 return 0
 
     def take_cost_reward(self):
@@ -196,7 +196,7 @@ class Task:
         return
 
 
-class Template:
+class Strategy:
     """ Template object."""
     def __init__(self):
         """ Initialize template object."""
@@ -209,8 +209,8 @@ class Template:
         """ Load a template from file."""
         task_data = open(filename, 'r').read()
         self.temp_file = json.loads(task_data)
-        self.rows = len(self.temp_file["template"]) 
-        self.cols = len(self.temp_file["template"][0]) 
+        self.rows = len(self.temp_file["strategy"]) 
+        self.cols = len(self.temp_file["strategy"][0]) 
         return
 
 

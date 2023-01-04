@@ -7,25 +7,25 @@ import logging
 import sys
 
 # non-standard libraries
-from primitives import Agent, Path, State, Task, Template
+from primitives import Agent, Path, State, Strategy, Task
 
 
 def train(args):
     """ Begin training."""
     # load template
     logging.info("Loading template...")
-    template = Template()
-    template.load(args.train)
-    logging.info("Template loaded!")
+    strategy = Strategy()
+    strategy.load(args.train)
+    logging.info("Strategy loaded!")
 
     # declare a starting point
     starting_point = State(0, 0)  
-    ending_point = State((template.rows - 1), (template.cols - 1))
+    ending_point = State((strategy.rows - 1), (strategy.cols - 1))
 
     # spawn the agent at the starting point
     agent = Agent(current_state=starting_point)
     # choose a strategy
-    agent.choose_strategy(args.strategy)
+    agent.choose_policy(args.policy)
 
     # initialize the path (action sequence)
     path = Path()
@@ -53,7 +53,7 @@ def train(args):
 
     # save your training output
     logging.info("Saving action sequence as task")
-    task = args.train.replace('templates/', '').replace('.json', '')
+    task = args.train.replace('strategies/', '').replace('.json', '')
     path.save(task)
     return
 
@@ -102,6 +102,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--train')
     parser.add_argument('--test')
-    parser.add_argument('--strategy')
+    parser.add_argument('--policy')
     args = parser.parse_args()
     main(args)
