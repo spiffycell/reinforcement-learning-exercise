@@ -20,12 +20,7 @@ class Agent:
 
     def choose_policy(self, policy): 
         """ Pick a strategy."""
-        if policy == 'min_cost':
-            self.policy = 'cost'
-        elif policy == 'max_reward':
-            self.policy = 'reward'
-        else:
-            self.policy = None
+        self.policy = policy
         return
 
     def change_state(self, new_state, mode=None):
@@ -77,10 +72,11 @@ class Agent:
         logging.debug("List of adjacents: %s\n", adjacents)
 
         # get the optimal value
-        if self.policy == 'cost':
+        self.apply_policy()
+        if self.policy == 'min_cost':
             optimal_value = min([adj_space[self.policy] for adj_space \
                 in adjacents])
-        elif self.policy == 'reward':
+        elif self.policy == 'max_reward':
             optimal_value = max([adj_space[self.policy] for adj_space \
                 in adjacents])
 
