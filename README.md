@@ -3,6 +3,7 @@
 ## Overview
 
 This is a simple RL exercise for me that I've been building from scratch.
+- This is not authoritative research, but rather me taking a stab at learning new things
 
 This machine learns to perform traversal patterns (either navigating or drawing) on a grid. So, for example, we can teach it how to draw letters!
 
@@ -19,7 +20,7 @@ $ ./entrypoint --train strategies/draw-an-l.json --policy min_cost
 
 We initialize the code from our `entrypoint` file
 We select that we want to `--train` our model on a `Strategy`
-- The Strategy we have chosen above is `strategies/draw-an-l.json`
+- The Stratgy we have chosen above is `strategies/draw-an-l.json`
 We assign the machine a Policy, in this case, it's `min_cost`
 
 
@@ -32,6 +33,7 @@ The Strategy is a matrix of cost and reward functions
 #### Why do Strategies matter?
 
 When it comes to teaching the machine a Task, we do not want to give it explicit instructions. We instead give it a map of cost and reward functions that _reinforces_ the behavior that we want it to exhibit when prompted.
+- The bot will find the path which optimizes for its given Policy
 
 Depending on the Policy, the bot will travel along the state space in various ways. 
 
@@ -41,9 +43,9 @@ This means, that, when we call on the machine to execute the Task, it will do so
 
 ### What is a Policy?
 
-A Policy is a simple directing principle that the machine will apply while operating. 
+A Policy is a simple directing principle (expressed as a function) that the machine will apply while operating. 
 
-Our two big strategies are `min_cost` and `max_reward`. We mentioned before that each state in the state space has its own set of cost and reward functions. 
+Our two big policies are `min_cost` and `max_reward`. We mentioned before that each state in the state space has its own set of cost and reward functions. 
 
 If the machine's Policy is `min_cost`, it will move to the states which have the lowest cost adjacent to its current state. If its Policy is `max_reward`, it will move to the states which have the highest reward adjacent to its current state.
 
