@@ -5,6 +5,32 @@ import numpy as np
 import sys
 
 
+class Policy():
+    """ Policy object."""
+    def __init__(self, name):
+        """ Initialize policy object."""
+        # the path the agent is taking
+        self.short_name = None
+        self.name = name 
+
+        # store short_name
+        if self.name == 'min_cost':
+            self.short_name = 'cost'
+        elif self.name == 'max_reward':
+            self.short_name = 'reward'
+        return
+
+    def apply(self, adjacents):
+        if self.name == 'min_cost':
+            optimal_value = min([adj_space[self.short_name] for adj_space \
+                in adjacents])
+        elif self.name == 'max_reward':
+            optimal_value = max([adj_space[self.short_name] for adj_space \
+                in adjacents])
+
+        return optimal_value
+
+
 class Agent:
     """ Agent object."""
     def __init__(self, current_state=None):
@@ -18,9 +44,9 @@ class Agent:
         self.health = 100
         return
 
-    def choose_policy(self, policy): 
+    def choose_policy(self, policy_name): 
         """ Pick a strategy."""
-        self.policy = policy
+        self.policy = Policy(policy_name)
         return
 
     def change_state(self, new_state, mode=None):
@@ -72,13 +98,7 @@ class Agent:
         logging.debug("List of adjacents: %s\n", adjacents)
 
         # get the optimal value
-        self.apply_policy()
-        if self.policy == 'min_cost':
-            optimal_value = min([adj_space[self.policy] for adj_space \
-                in adjacents])
-        elif self.policy == 'max_reward':
-            optimal_value = max([adj_space[self.policy] for adj_space \
-                in adjacents])
+        optimal_value = self.policy.apply(adjacents)
 
         # get the entry that owns the optimal value
         optimal_entry = next((adj_space for adj_space in adjacents \
@@ -193,16 +213,16 @@ class Task:
 
 
 class Strategy:
-    """ Template object."""
+    """ Strategy object."""
     def __init__(self):
-        """ Initialize template object."""
+        """ Initialize strategy object."""
         self.temp_file = ''
         self.temp_rows = ''
         self.temp_cols = ''
         return
 
     def load(self, filename):
-        """ Load a template from file."""
+        """ Load a strategy from file."""
         task_data = open(filename, 'r').read()
         self.temp_file = json.loads(task_data)
         self.rows = len(self.temp_file["strategy"]) 
@@ -235,4 +255,13 @@ class Path():
         # and export it
         with open(f"tasks/{task}.task", "w") as f:
             f.write(str(move_sequence))
+        return
+
+
+class Policy():
+    """ Policy object."""
+    def __init__(self, name):
+        """ Initialize policy object."""
+        # the path the agent is taking
+        self.name = name 
         return
